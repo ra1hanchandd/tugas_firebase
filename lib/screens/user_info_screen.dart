@@ -1,0 +1,74 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import '../fcm_token_card.dart';
+
+class UserInfoScreen extends StatelessWidget {
+  final User user;
+
+  const UserInfoScreen({super.key, required this.user});
+
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard User'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(Icons.account_circle, size: 100, color: Colors.blue),
+                const SizedBox(height: 24),
+                const Text(
+                  'Login Berhasil!',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'UID: ${user.uid}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text('Email: ${user.email ?? "Tidak ada email"}'),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Email Terverifikasi: ${user.emailVerified ? "Ya" : "Tidak"}',
+                        ),
+                        const SizedBox(height: 8),
+                        Text('Terakhir Login: ${user.metadata.lastSignInTime}'),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const FcmTokenCard(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
